@@ -43,6 +43,8 @@ io.on('connection', (socket) => {
     // --- Avatars ---
     socket.on('join', (data) => {
         avatars[socket.id] = {
+	    ...data,
+	    id: socket.id
         };
         io.emit('avatars', Object.values(avatars));
         io.emit('titles', Object.values(titles)); // Send titles to newly connected client

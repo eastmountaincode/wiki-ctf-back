@@ -43,8 +43,6 @@ io.on('connection', (socket) => {
     // --- Avatars ---
     socket.on('join', (data) => {
         avatars[socket.id] = {
-            ...data,
-            id: socket.id // so frontend can identify self
         };
         io.emit('avatars', Object.values(avatars));
         io.emit('titles', Object.values(titles)); // Send titles to newly connected client
@@ -53,7 +51,6 @@ io.on('connection', (socket) => {
     socket.on('move', (data) => {
         if (avatars[socket.id]) {
             avatars[socket.id] = {
-                ...avatars[socket.id],
                 ...data
             };
             io.emit('avatars', Object.values(avatars));
@@ -62,16 +59,11 @@ io.on('connection', (socket) => {
 
     // --- Titles: position/ownership update ---
     socket.on('titleMove', (data) => {
-        const { titleId, x, y, currentZoneIndex, carriedBy, teamColor } = data;
-
-        if (titles[titleId]) {
-            titles[titleId] = {
-                ...titles[titleId],
-                x,
-                y,
-                currentZoneIndex,
-                carriedBy, // should be a socket.id or null
-                teamColor,
+        const { id, x, y, currentZoneIndex, carriedBy, teamColor } = data;
+        if (titles[id]) {
+            titles[id] = {
+                ...titles[id],
+                x, y, currentZoneIndex, carriedBy, teamColor,
             };
             io.emit('titles', Object.values(titles));
         }
